@@ -1,10 +1,11 @@
 <Query Kind="Program">
   <NuGetReference>AngleSharp</NuGetReference>
+  <Namespace>AngleSharp.Html.Parser</Namespace>
   <Namespace>System.Net</Namespace>
   <Namespace>System.Net.Http</Namespace>
+  <Namespace>System.Text.Json</Namespace>
   <Namespace>System.Threading.Tasks</Namespace>
-  <Namespace>AngleSharp.Html.Parser</Namespace>
-  <Namespace>System.Runtime.InteropServices</Namespace>
+  <Namespace>System.Text.Json.Serialization</Namespace>
   <RemoveNamespace>System.Collections</RemoveNamespace>
   <RemoveNamespace>System.Data</RemoveNamespace>
   <RemoveNamespace>System.Diagnostics</RemoveNamespace>
@@ -37,13 +38,19 @@ async Task Main()
 	capitals.RemoveAll(c => c.Capital.Length == 0);
 	//capitals.Sort((x,y) => x.Country.CompareTo(y.Country));
 	capitals.SortBy(c => c.Country);
-	
-	capitals.Dump();
+
+    //capitals.Dump();
+    JsonSerializerOptions jso = new JsonSerializerOptions();
+    jso.WriteIndented = true;
+    jso.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+    JsonSerializer.Serialize(capitals, jso).Dump();
 }
 
 class CapitalInfo
 {
+    [JsonPropertyName("country")]
 	public required string Country { get; init; }
+    [JsonPropertyName("capital")]
 	public required string Capital { get; init; }
 }
 
